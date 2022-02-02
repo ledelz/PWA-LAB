@@ -1,4 +1,4 @@
-self.addEventListener('install', function (event) {
+this.addEventListener('install', function (event) {
   console.log('Installation du service worker ');
   event.waitUntil(
     caches.open('v1').then(function (cache) {
@@ -17,7 +17,7 @@ self.addEventListener('install', function (event) {
   );
 });
 
-self.addEventListener('fetch', function (event) {
+this.addEventListener('fetch', function (event) {
   console.log("Fetching ..." + event.request.url);
   event.respondWith(caches.match(event.request).then((response) => {
     if (response !== undefined) {
