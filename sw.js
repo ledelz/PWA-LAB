@@ -18,35 +18,17 @@ this.addEventListener('install', function (event) {
   );
 });
 
-/* this.addEventListener('fetch', function (event) {
-  console.log("Fetching ..." + event.request.url);
 
-  event.respondWith(caches.match(event.request).then((response) => {
-    if (response !== undefined) {
-      return response;
-    } else {
-      console.log("Fetching from fetch ..." + event.request.url);
-      return fetch(event.request);
-    }
-    
-  }))
-
-})
-
- */
-
-
-
-this.addEventListener('fetch', function(event) {
-  console.log("Fetching ..." + event.request.url);
-  event.respondWith(cacheOrNetwork(event.request).catch(() => fallbackVersPageHorsLigne()));
+this.addEventListener('activate', (e) => {
+  console.log('Service worker: active');
 });
 
-
 async function cacheOrNetwork(request) {
-
- return  fromCache(request).catch(() => fetch(request));
-
+  try {
+    return await fromCache(request);
+  } catch {
+    return await fetch(request);
+  }
 };
 
 async function fromCache(request) {
@@ -55,39 +37,34 @@ async function fromCache(request) {
   return matching || Promise.reject('no-match');
 }
 
+this.addEventListener('fetch', function(event) {
+  event.respondWith(cacheOrNetwork(event.request).catch(() => 
+  fallbackVersPageHorsLigne()));
+});
+ 
 function fallbackVersPageHorsLigne() {
-return caches.match('horsLigne.html');
-}
+  return caches.match("horsLigne.html");
+ }
 
 
 this.addEventListener('sync', function (event) {
   console.log("evenement recu : " + event);
-  if (event.tag == 'notif de connexion') {
-      console.log("connexion rétabie");
+  if (event.tag == 'notif') {
+      console.log("Connexion réétablie.");
+      event.waitUntil(envoyerNotification());
   }
 });
 
-self.addEventListener('push', function (event) {
-  console.log("push recu: " + e);
-  if (event.data) {
-    data = event.data.json();
-}
-console.log("donnee du push: " + JSON.stringify(data)); 
-  envoyerNotification();
-});
-
-
 function envoyerNotification() {
+  console.log("Notification envoyée");
   if (Notification.permission === 'granted') {
       var options = {
-          body: 'Notification',
+          body: 'Le contenu est maintenant disponible !',
           requireInteraction: true
       };
 
-      self.registration.showNotification('Hello', options);
+      self.registration.showNotification('connexion rétablie avec succes', options);
   } else {
       console.log("aucune notification car non permis");
   }
 }
-
-
