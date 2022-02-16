@@ -11,14 +11,16 @@ this.addEventListener('install', function (event) {
         'bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js',
         'bootstrap-5.1.3-dist/css/bootstrap.min.css',
         'index.js',
-        'index.html'
+        'index.html',
+        'horsLigne.html'
       ]);
     })
   );
 });
 
-this.addEventListener('fetch', function (event) {
+/* this.addEventListener('fetch', function (event) {
   console.log("Fetching ..." + event.request.url);
+
   event.respondWith(caches.match(event.request).then((response) => {
     if (response !== undefined) {
       return response;
@@ -26,28 +28,66 @@ this.addEventListener('fetch', function (event) {
       console.log("Fetching from fetch ..." + event.request.url);
       return fetch(event.request);
     }
+    
   }))
+
 })
 
-// possibilité de cloner la requete avec le code suivant : 
-/*
-self.addEventListener('fetch', function(event) {
-    event.respondWith(caches.match(event.request).then(function(response) {
+ */
 
-      if (response !== undefined) {
-        return response;
-      } else {
-        console.log("Fetching from fetch ..." + event.request.url);
-        return fetch(event.request).then(function (response) {
-     
-          let responseClone = response.clone();
-          
-          caches.open('v1').then(function (cache) {
-            cache.put(event.request, responseClone);
-          });
-          return response;
-        })
-      }
-    }));
-  });
-*/
+
+
+this.addEventListener('fetch', function(event) {
+  console.log("Fetching ..." + event.request.url);
+  event.respondWith(cacheOrNetwork(event.request).catch(() => fallbackVersPageHorsLigne()));
+});
+
+
+async function cacheOrNetwork(request) {
+
+ return  fromCache(request).catch(() => fetch(request));
+
+};
+
+async function fromCache(request) {
+  const cache = await caches.open('v1');
+  const matching = await cache.match(request);
+  return matching || Promise.reject('no-match');
+}
+
+function fallbackVersPageHorsLigne() {
+return caches.match('horsLigne.html');
+}
+
+
+this.addEventListener('sync', function (event) {
+  console.log("evenement recu : " + event);
+  if (event.tag == 'notif de connexion') {
+      console.log("connexion rétabie");
+  }
+});
+
+self.addEventListener('push', function (event) {
+  console.log("push recu: " + e);
+  if (event.data) {
+    data = event.data.json();
+}
+console.log("donnee du push: " + JSON.stringify(data)); 
+  envoyerNotification();
+});
+
+
+function envoyerNotification() {
+  if (Notification.permission === 'granted') {
+      var options = {
+          body: 'Notification',
+          requireInteraction: true
+      };
+
+      self.registration.showNotification('Hello', options);
+  } else {
+      console.log("aucune notification car non permis");
+  }
+}
+
+

@@ -3,7 +3,7 @@
     "background_color": "white",
     "display": "standalone",
     "scope": "https://ledelz.github.io/PWA-LAB02/",
-    "start_url": "https://ledelz.github.io/PWA-LAB02/",
+    "start_url": "https://ledelz.github.io/PWA-LAB0/",
     "name": "Location voiture Montreal ",
     "short_name": "rentCarMtl",
     "description": "site de location de vehihicules de promenade ",
