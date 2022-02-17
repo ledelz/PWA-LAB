@@ -21,7 +21,7 @@ this.addEventListener('install', function (event) {
 //___________________
 
 this.addEventListener("activate", (e) => {
-  console.log("Service worker: active");
+  console.log("Sw actif");
 });
 
 function cacheOrNetwork(request) {
@@ -36,34 +36,36 @@ function fromCache(request) {
   });
 }
 
-this.addEventListener('fetch', function(event) {
-  event.respondWith
-  (cacheOrNetwork(event.request).catch(() => fallbackVersPageHorsLigne()));
+this.addEventListener("fetch", function (event) {
+  event.respondWith(
+    cacheOrNetwork(event.request).catch(() => fallbackVersPageHorsLigne())
+  );
 });
- 
+
 function fallbackVersPageHorsLigne() {
   return caches.match("page-hors-ligne.html");
- }
+}
 
-
-this.addEventListener('sync', function (event) {
-  console.log("evenement recu : " + event);
-  if (event.tag == 'notif') {
-      console.log("Connexion réétablie.");
-      event.waitUntil(envoyerNotification());
+// sync service worker.
+this.addEventListener("sync", function (event) {
+  console.log("reçu : " + event);
+  if (event.tag == "sit") {
+    console.log("Connection réétablie envoie notif si permis");
+    event.waitUntil(envoyerNotification());
   }
 });
 
+// Connection rétablie. notification: la page est dispo.
 function envoyerNotification() {
   console.log("Notification envoyée");
-  if (Notification.permission === 'granted') {
-      var options = {
-          body: 'Le contenu est maintenant disponible !',
-          requireInteraction: true
-      };
+  if (Notification.permission === "granted") {
+    var options = {
+      body: "Page dispo",
+      requireInteraction: true,
+    };
 
-      self.registration.showNotification('connexion rétablie avec succes', options);
+    self.registration.showNotification("Connection réétabli", options);
   } else {
-      console.log("aucune notification car non permis");
+    console.log("Pas de notif: non permis");
   }
 }
