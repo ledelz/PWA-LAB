@@ -1,51 +1,28 @@
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("sw.js")
-    .then(function (reg) {
-      console.log("Scope" + reg.scope);
-    })
-    .catch(function (error) {
-      console.log("Error" + error);
-    });
-}
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(function (reg) {
+    // registration worked
+    console.log('Registration succeeded.' + reg.scope);
+  }).catch(function (error) {
+    // registration failed
+    console.log('Registration failed with ' + error);
+  });
+};
 
-// Initialise la variable
+// ajout d'une fenetre qui demande à l'utilisateur s'il veut installer l'application;
 let deferredPrompt;
-
-window.addEventListener("beforeinstallprompt", (e) => {
-  // pas de barre si installé
+window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
-  // Réserve evenement
   deferredPrompt = e;
-  // installer pwa fenêtre avertissement
   showInstall();
 
-  console.log(`'beforeinstallprompt' fired.`);
-
- 
- appButton.addEventListener("click", function () {
+  console.log(`'beforeinstallprompt'`);
+  install.addEventListener('click', function () {
     deferredPrompt.prompt();
   })
 });
 
-// informer l'utilisateur de la possibilité d'installer pwa
-
 function showInstall() {
   const installation = document.getElementById('fenetre')
-  const toast = new bootstrap.Toast(installation, { delay: 6000 })
+  const toast = new bootstrap.Toast(installation, { delay: 10000 })
   toast.show();
-}
-
-// Demande la permission d'afficher des notifications en cliquant sur le boutton
-function meNotifier() {
-  Notification.requestPermission().then(function (result) {
-    console.log("permission donnée");
-  });
-}
-
-// Déclenche l’enregistrement d’un background sync
-if ("serviceWorker" in navigator && "SyncManager" in window) {
-  navigator.serviceWorker.ready.then(function (reg) {
-    return reg.sync.register("notif");
-  });
 }
