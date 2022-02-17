@@ -43,8 +43,8 @@ function fallbackVersPageHorsLigne() {
 // sync service worker.
 this.addEventListener("sync", function (event) {
   console.log("reçu : " + event);
-  if (event.tag == "sit") {
-    console.log("Connection réétablie envoie notif si permis");
+  if (event.tag == "notification") {
+    console.log("Connection réétablie");
     event.waitUntil(envoyerNotification());
   }
 });

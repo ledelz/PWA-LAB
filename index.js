@@ -37,6 +37,6 @@ function meNotifier() {
 // Déclenche l’enregistrement d’un background sync
 if ("serviceWorker" in navigator && "SyncManager" in window) {
   navigator.serviceWorker.ready.then(function (reg) {
-    return reg.sync.register("sit");
+    return reg.sync.register("notification");
   });
 }
