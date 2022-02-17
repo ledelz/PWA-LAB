@@ -39,7 +39,7 @@ function showInstall() {
 // Demande la permission d'afficher des notifications en cliquant sur le boutton
 function meNotifier() {
   Notification.requestPermission().then(function (result) {
-    console.log("permission accordée");
+    console.log("permission donnée");
   });
 }
 
