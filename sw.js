@@ -59,7 +59,7 @@ function envoyerNotification() {
 
     self.registration.showNotification("Bon retour !", options);
   } else {
-    console.log("Pas de notif: non permis");
+    console.log("Pas de notification car non permises");
   }
 }
 
