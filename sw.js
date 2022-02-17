@@ -44,7 +44,7 @@ function fallbackVersPageHorsLigne() {
 this.addEventListener("sync", function (event) {
   console.log("reçu : " + event);
   if (event.tag == "notification") {
-    console.log("Connection réétablie");
+    console.log("Connection ");
     event.waitUntil(envoyerNotification());
   }
 });
@@ -56,7 +56,7 @@ function envoyerNotification() {
           requireInteraction: true
       };
 
-      this.registration.showNotification('connexion retablie', options);
+      this.registration.showNotification('connexion retablie ', options);
   } else {
       console.log("aucune notification car non permis");
   }
