@@ -22,10 +22,10 @@ window.addEventListener("beforeinstallprompt", (e) => {
 
   console.log(`'beforeinstallprompt' fired.`);
 
-  // bouton installer
- // appButton.addEventListener("click", function () {
-   // deferredPrompt.prompt();
- // })
+ 
+ appButton.addEventListener("click", function () {
+    deferredPrompt.prompt();
+  })
 });
 
 // informer l'utilisateur de la possibilité d'installer pwa

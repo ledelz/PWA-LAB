@@ -12,7 +12,7 @@ this.addEventListener('install', function (event) {
         'bootstrap-5.1.3-dist/css/bootstrap.min.css',
         'index.js',
         'index.html',
-        'horsLigne.html'
+        'page-hors-Ligne.html'
       ]);
     })
   );
