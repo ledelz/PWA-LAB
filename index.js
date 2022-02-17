@@ -40,6 +40,6 @@ function meNotifier() {
 
 if ('serviceWorker' in navigator && 'SyncManager' in window) {
   navigator.serviceWorker.ready.then(function(reg) {
-      return reg.sync.register('notif');
+      return reg.sync.register("sit");
   });
 };
