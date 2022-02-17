@@ -44,22 +44,24 @@ function fallbackVersPageHorsLigne() {
 this.addEventListener("sync", function (event) {
   console.log("reçu : " + event);
   if (event.tag == "notification") {
-    console.log("Connection ");
+    console.log("Connexion établie ");
     event.waitUntil(envoyerNotification());
   }
 });
 
 function envoyerNotification() {
-  if (Notification.permission === 'granted') {
-      var options = {
-          body: 'page indisponible',
-          requireInteraction: true
-      };
+  console.log("Notification envoyée");
+  if (Notification.permission === "granted") {
+    var options = {
+      body: "Page disponible",
+      requireInteraction: true,
+    };
 
-      this.registration.showNotification('connexion retablie ', options);
+    self.registration.showNotification("Bon retour !", options);
   } else {
-      console.log("aucune notification car non permis");
+    console.log("Pas de notif: non permis");
   }
+}
 } 
 
 
