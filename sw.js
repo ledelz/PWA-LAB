@@ -61,11 +61,11 @@ function envoyerNotification() {
   console.log("Notification envoyée");
   if (Notification.permission === "granted") {
     var options = {
-      body: "Page dispo",
+      body: "Le contenu de la page est maintenant disponible",
       requireInteraction: true,
     };
 
-    self.registration.showNotification("Connection réétabli", options);
+    self.registration.showNotification("Connexion retablie avec succes", options);
   } else {
     console.log("Pas de notif: non permis");
   }
