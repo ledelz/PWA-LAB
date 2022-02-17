@@ -3,7 +3,6 @@ self.addEventListener('install', function (event) {
   event.waitUntil(
     caches.open('v1').then(function (cache) {
       return cache.addAll([
-        'favicon.ico',
         'images/2021-volkswagen-jetta-mmp-1-1597767712.jpg',
         'images/2021-honda-civic-mmp-1-1595005323.jpg',
         'images/2021_corolla-apex_exterior_0071614281777066.jpg',
@@ -11,43 +10,56 @@ self.addEventListener('install', function (event) {
         'bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js',
         'bootstrap-5.1.3-dist/css/bootstrap.min.css',
         'index.js',
-        'index.html'
+        'index.html',
+        'page-hors-ligne.html'
+
       ]);
     })
   );
 });
 
-self.addEventListener('fetch', function (event) {
-  console.log("Fetching ..." + event.request.url);
-  event.respondWith(caches.match(event.request).then((response) => {
-    if (response !== undefined) {
-      return response;
-    } else {
-      console.log("Fetching from fetch ..." + event.request.url);
-      return fetch(event.request);
-    }
-  }))
-})
+function cacheOrNetwork(request) {
+  return fromCache(request).catch(() => fetch(request));
+}
 
-// possibilité de cloner la requete avec le code suivant : 
-/*
-self.addEventListener('fetch', function(event) {
-    event.respondWith(caches.match(event.request).then(function(response) {
-
-      if (response !== undefined) {
-        return response;
-      } else {
-        console.log("Fetching from fetch ..." + event.request.url);
-        return fetch(event.request).then(function (response) {
-     
-          let responseClone = response.clone();
-          
-          caches.open('v1').then(function (cache) {
-            cache.put(event.request, responseClone);
-          });
-          return response;
-        })
-      }
-    }));
+function fromCache(request) {
+  return caches.open("v1").then(function (cache) {
+    return cache.match(request).then(function (matching) {
+      return matching || Promise.reject("no-match");
+    });
   });
-*/
+}
+
+this.addEventListener("fetch", function (event) {
+  event.respondWith(
+    cacheOrNetwork(event.request).catch(() => fallbackVersPageHorsLigne())
+  );
+});
+
+function fallbackVersPageHorsLigne() {
+  return caches.match("page-hors-ligne.html");
+}
+
+// sync service worker.
+this.addEventListener("sync", function (event) {
+  console.log("reçu : " + event);
+  if (event.tag == "sit") {
+    console.log("Connection réétablie envoie notif si permis");
+    event.waitUntil(envoyerNotification());
+  }
+});
+
+function envoyerNotification() {
+  if (Notification.permission === 'granted') {
+      var options = {
+          body: 'page indisponible',
+          requireInteraction: true
+      };
+
+      this.registration.showNotification('connexion retablie', options);
+  } else {
+      console.log("aucune notification car non permis");
+  }
+} 
+
+
