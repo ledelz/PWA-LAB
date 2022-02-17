@@ -4,7 +4,7 @@ this.addEventListener("install", function (event) {
     caches.open("v1").then(function (cache) {
       console.log("[Service Worker] Mise en cache");
       return cache.addAll([
-        'favicon.ico',
+        
         'images/2021-volkswagen-jetta-mmp-1-1597767712.jpg',
         'images/2021-honda-civic-mmp-1-1595005323.jpg',
         'images/2021_corolla-apex_exterior_0071614281777066.jpg',
