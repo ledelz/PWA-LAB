@@ -62,6 +62,6 @@ function envoyerNotification() {
     console.log("Pas de notif: non permis");
   }
 }
-} 
+
 
 
