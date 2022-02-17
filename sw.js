@@ -18,58 +18,52 @@ this.addEventListener('install', function (event) {
   );
 });
 
+//___________________
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("sw.js")
-    .then(function (reg) {
-      console.log("Scope" + reg.scope);
-    })
-    .catch(function (error) {
-      console.log("Error" + error);
-    });
-}
-
-// Initialise la variable
-let deferredPrompt;
-
-window.addEventListener("beforeinstallprompt", (e) => {
-  // pas de barre si installé
-  e.preventDefault();
-  // Réserve evenement
-  deferredPrompt = e;
-  // installer pwa fenêtre avertissement
-  installApp();
-
-  console.log(`'beforeinstallprompt' fired.`);
-
-  // bouton installer
- // appButton.addEventListener("click", function () {
-   // deferredPrompt.prompt();
- // })
+this.addEventListener("activate", (e) => {
+  console.log("Service worker: active");
 });
 
-// informer l'utilisateur de la possibilité d'installer pwa
+function cacheOrNetwork(request) {
+  return fromCache(request).catch(() => fetch(request));
+}
 
-function installApp() {
-  console.log("fonctionne");
-  const fenetre = document.getElementById("mytoast");
-  const toast = new bootstrap.Toast(fenetre, {
-    delay: 5000
-  }); //affichée 5 secondes
-  toast.show();
-};
-
-// Demande la permission d'afficher des notifications en cliquant sur le boutton
-function meNotifier() {
-  Notification.requestPermission().then(function (result) {
-    console.log("permission accordée");
+function fromCache(request) {
+  return caches.open("v1").then(function (cache) {
+    return cache.match(request).then(function (matching) {
+      return matching || Promise.reject("no-match");
+    });
   });
 }
 
-// Déclenche l’enregistrement d’un background sync
-if ("serviceWorker" in navigator && "SyncManager" in window) {
-  navigator.serviceWorker.ready.then(function (reg) {
-    return reg.sync.register("sit");
-  });
+this.addEventListener('fetch', function(event) {
+  event.respondWith
+  (cacheOrNetwork(event.request).catch(() => fallbackVersPageHorsLigne()));
+});
+ 
+function fallbackVersPageHorsLigne() {
+  return caches.match("page-hors-ligne.html");
+ }
+
+
+this.addEventListener('sync', function (event) {
+  console.log("evenement recu : " + event);
+  if (event.tag == 'notif') {
+      console.log("Connexion réétablie.");
+      event.waitUntil(envoyerNotification());
+  }
+});
+
+function envoyerNotification() {
+  console.log("Notification envoyée");
+  if (Notification.permission === 'granted') {
+      var options = {
+          body: 'Le contenu est maintenant disponible !',
+          requireInteraction: true
+      };
+
+      self.registration.showNotification('connexion rétablie avec succes', options);
+  } else {
+      console.log("aucune notification car non permis");
+  }
 }

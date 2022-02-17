@@ -26,20 +26,22 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 function showInstall() {
   const installation = document.getElementById('fenetre')
-  const toast = new bootstrap.Toast(installation, { delay: 10000 })
+  const toast = new bootstrap.Toast(installation, { delay: 6000 })
   toast.show();
 }
 
 
 
+// Demande la permission d'afficher des notifications en cliquant sur le boutton
 function meNotifier() {
   Notification.requestPermission().then(function (result) {
-      console.log("permission donnée");
+    console.log("permission donnée");
   });
 }
 
-if ('serviceWorker' in navigator && 'SyncManager' in window) {
-  navigator.serviceWorker.ready.then(function(reg) {
-      return reg.sync.register("sit");
+// Déclenche l’enregistrement d’un background sync
+if ("serviceWorker" in navigator && "SyncManager" in window) {
+  navigator.serviceWorker.ready.then(function (reg) {
+    return reg.sync.register("notif");
   });
-};
+}
