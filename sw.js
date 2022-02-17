@@ -1,7 +1,8 @@
-this.addEventListener('install', function (event) {
-  console.log('Installation du service worker ');
+this.addEventListener("install", function (event) {
+  console.log("[Service Worker] Installation de v1");
   event.waitUntil(
-    caches.open('v1').then(function (cache) {
+    caches.open("v1").then(function (cache) {
+      console.log("[Service Worker] Mise en cache");
       return cache.addAll([
         'favicon.ico',
         'images/2021-volkswagen-jetta-mmp-1-1597767712.jpg',
