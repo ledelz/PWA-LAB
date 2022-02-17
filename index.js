@@ -31,7 +31,7 @@ function showInstall() {
 }
 
 
-
+// notifications
 function meNotifier() {
   Notification.requestPermission().then(function (result) {
       console.log("permission donnée");
